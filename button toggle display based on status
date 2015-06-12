@@ -1,0 +1,61 @@
+.jumbotron.htitle
+  .container
+    #section1.divider
+    .container
+      .col-sm-10.col-sm-offset-1
+        .text-center
+          .h2.strong Popular places to go
+        p.lead.text-center Get inspired by destinations our travellers love.
+        .divider
+    .row
+      #citystate
+        .text-center
+          .col-lg-12.col-md-12.col-sm-12 style=("padding-right: 0px;padding-left: 0p;")
+            .btn-group.btn-group-sm.clearfix 
+              .btn.btn-primary name="nav" data-rel='all' Show All
+              .btn.btn-default name="nav" data-rel='unlocked' Unlocked
+              .btn.btn-default name="nav" data-rel='locked' Locked
+    .row
+      #portfolio
+        - @cities.each do |c|
+          - if (c.status == 'locked')
+            .col-lg-4.rm-padding-sm.col-md-6.locked.all style=("padding-right: 0px; padding-left: 0px;")
+              .imageContainer
+                = image_tag attachment_url(c, :img), :class =>'img-responsive'
+                .city_container
+                  h2 = c.name
+                .citydetails
+                  h2 = c.name
+                  p  Destination has been #{c.status}!
+          - elsif (c.status == 'unlocked')
+            .col-lg-4.rm-padding-sm.col-md-6.unlocked.all style=("padding-right: 0px; padding-left: 0px;")
+              .imageContainer
+                .discover_card style='background-image:url("#{attachment_url(c, :img, :fill, 675, 675, format: "jpg")}");'
+                  = link_to '/search?utf8=✓&q%5Bcity_name_or_country_name_cont%5D='+c.name+'&commit=Search', :class =>'link-reset' do
+                    .city_container
+                      .va-middle.text-center.text-contrast
+                        .h2.strong = c.name
+
+
+javascript:
+  $(document).ready(function() {
+      var selectedClass = "";
+      $(".btn[name='nav']").click(function(){
+      selectedClass = $(this).attr("data-rel");
+        if( $(this).hasClass("btn-default") ) {
+            $(this).removeClass("btn-default").addClass("btn-primary");
+            $(this).siblings().removeClass("btn-primary").addClass("btn-default"); 
+        } else {
+            // if other menus are open remove open class and add closed
+            $(this).siblings().removeClass("btn-primary").addClass("btn-default"); 
+        }
+      $("#portfolio").fadeTo(100, 0.1);
+      $("#portfolio div").not("."+selectedClass).fadeOut();
+      setTimeout(function() {
+        $("."+selectedClass).fadeIn();
+        $("."+selectedClass +" div").fadeIn();
+        $("#portfolio").fadeTo(500, 1);
+      }, 500);
+      
+    });
+  });
